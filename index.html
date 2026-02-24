@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Alexander — The Great</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080810;
+    --accent: #c9a84c;
+    --text: #f0ede6;
+    --text-dim: #9a9080;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    max-width: 390px;
+    margin: 0 auto;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--accent);
+    z-index: 100;
+    box-shadow: 0 0 10px rgba(201,168,76,0.5);
+  }
+
+  /* ── GRAIN ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  /* ══════════════════════════
+     OPENING
+  ══════════════════════════ */
+  .opening {
+    height: 100lvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .opening-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 55% at 50% 25%, #1c1508 0%, transparent 65%),
+      radial-gradient(ellipse 50% 70% at 75% 70%, #0d0a1a 0%, transparent 60%),
+      var(--bg);
+  }
+
+  /* Stars */
+  .opening-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 18%, rgba(201,168,76,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 82% 12%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 55% 10%, rgba(201,168,76,0.45) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 55%, rgba(201,168,76,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 88% 50%, rgba(201,168,76,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 80%, rgba(201,168,76,0.18) 0%, transparent 100%),
+      radial-gradient(1px 1px at 68% 75%, rgba(201,168,76,0.22) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 30%, rgba(201,168,76,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 72% 35%, rgba(201,168,76,0.18) 0%, transparent 100%);
+  }
+
+  .opening-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .category {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 5px;
+    color: var(--accent);
+    opacity: 0;
+    margin-bottom: 24px;
+    animation: fadeUp 1s ease forwards 0.4s;
+  }
+
+  .main-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 84px;
+    font-weight: 600;
+    line-height: 0.88;
+    color: var(--text);
+    letter-spacing: -2px;
+    opacity: 0;
+    animation: fadeUp 1.1s ease forwards 0.6s;
+  }
+
+  .o-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-dim);
+    margin-top: 10px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.78s;
+  }
+
+  .opening-divider {
+    width: 36px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0;
+    margin: 28px 0;
+    animation: fadeIn 1s ease forwards 0.9s;
+  }
+
+  .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--text-dim);
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1s;
+  }
+
+  .read-badge {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 11px;
+    color: var(--text-dim);
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1.15s;
+  }
+
+  .read-badge::before {
+    content: '◷';
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+
+  .scroll-hint.visible {
+    opacity: 1;
+    animation: bounce 2.2s ease-in-out infinite;
+  }
+
+  .scroll-hint-text {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    opacity: 0.4;
+  }
+
+  .scroll-hint-line {
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(to bottom, rgba(201,168,76,0.5), transparent);
+  }
+
+  /* ══════════════════════════
+     SCENE STRUCTURE
+  ══════════════════════════ */
+  .scene-wrapper {
+    position: relative;
+  }
+
+  .sticky-panel {
+    position: sticky;
+    top: 0;
+    height: 100lvh;
+    overflow: hidden;
+  }
+
+  /* Top fade — content scrolls up and dissolves before reaching 01/05 */
+  .sticky-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 160px;
+    background: linear-gradient(to bottom,
+      #080810 0%,
+      #080810 38%,
+      rgba(8,8,16,0.75) 58%,
+      transparent 100%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* ── Scene BG: starts blurred, sharpens on enter ── */
+  .scene-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    will-change: transform, filter, opacity;
+    transform-origin: center center;
+    filter: blur(12px) brightness(0.6);
+    transform: scale(1.08);
+    transition: filter 0.9s ease;
+  }
+
+  .scene-bg.sharp {
+    filter: blur(0px) brightness(1);
+    transform: scale(1);
+  }
+
+  /* Scene 1: blur driven by JS scroll progress — no CSS transition */
+  .scene-bg.scroll-blur {
+    transition: none;
+  }
+
+  .scene-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 8, 16, 0.52);
+  }
+
+  .scene-gradient {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 360px;
+    background: linear-gradient(to top,
+      #080810 0%, #080810 8%,
+      rgba(8,8,16,0.9) 35%,
+      transparent 100%);
+  }
+
+  /* Scene number */
+  .scene-top {
+    position: absolute;
+    top: 52px;
+    left: 28px;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .scene-top-line {
+    width: 0px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+    transition: width 0.8s ease 0.2s;
+  }
+
+  .scene-top-line.in { width: 18px; }
+
+  .scene-num {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s;
+  }
+
+  .scene-num.in { opacity: 0.55; transform: translateX(0); }
+
+  /* ── Text content ── */
+  .scene-content {
+    position: absolute;
+    top: 42%; left: 0; right: 0;
+    padding: 0 28px 44px;
+    z-index: 2;
+    will-change: transform;
+  }
+
+  /* ── WORD-BY-WORD HEADLINE ── */
+  .scene-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 600;
+    font-style: italic;
+    line-height: 1.25;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  /* Each word is a span — driven by scroll */
+  .word {
+    display: inline;
+    opacity: 0;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+    filter: blur(3px);
+  }
+
+  .word.lit {
+    opacity: 1;
+    filter: blur(0px);
+  }
+
+  /* Body text */
+  .scene-body {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.7;
+    color: rgba(240,237,230,0.72);
+    margin-bottom: 20px;
+  }
+
+  .scene-body p + p { margin-top: 1em; }
+
+  /* Body words — scroll-written, opacity only (no blur — distinct from headline) */
+  .body-word {
+    display: inline;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .body-word.lit {
+    opacity: 1;
+  }
+
+  /* Pullquote — in-flow inside scene-content, rises with teleprompter */
+  .scene-pullquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--accent);
+    padding-left: 14px;
+    border-left: 1px solid rgba(201,168,76,0.0);
+    margin-top: 24px;
+    opacity: 0;
+    transition: opacity 0.8s ease, border-color 0.8s ease;
+  }
+
+  .scene-pullquote.in {
+    opacity: 1;
+    border-left-color: rgba(201,168,76,0.35);
+  }
+
+
+  /* ══════════════════════════
+     SCENE 1 BACKGROUND
+  ══════════════════════════ */
+  .s1-bg {
+    background-image: url('assets/images/lucid-origin_A_teenage_prince_taming_a_wild_black_stallion_in_ancient_Macedonia_golden_hour_s-0.jpg');
+    background-size: cover;
+    background-position: center 20%;
+  }
+
+  /* ══════════════════════════
+     SCENE 3 BACKGROUND
+  ══════════════════════════ */
+  .s3-bg {
+    background-image: url('assets/images/lucid-origin_Alexander_the_Great_leading_a_cavalry_charge_at_the_Battle_of_Gaugamela_ancient_-0.jpg');
+    background-size: cover;
+    background-position: center 35%;
+  }
+
+  /* Battle names — appear as a block after headline */
+  .scene-battles {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    line-height: 1.8;
+    color: var(--accent);
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .scene-battles.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ══════════════════════════
+     SCENE 2 BACKGROUND
+  ══════════════════════════ */
+  .s2-bg {
+    background-image: url('assets/images/lucid-origin_Ancient_Greek_army_crossing_a_narrow_sea_strait_at_dawn_thousands_of_soldiers_on-0.jpg');
+    background-size: cover;
+    background-position: center 30%;
+  }
+
+  /* ══════════════════════════
+     ANIMATIONS
+  ══════════════════════════ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 0.35; }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(7px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div id="progress"></div>
+
+<!-- ════════════════════════════════
+     OPENING
+════════════════════════════════ -->
+<section class="opening" id="opening">
+  <div class="opening-bg"></div>
+  <div class="opening-content">
+    <div class="category">HISTORY</div>
+    <div class="main-title">Alexander</div>
+    <div class="o-subtitle">The Great</div>
+    <div class="opening-divider"></div>
+    <div class="tagline">The boy who ran out of world</div>
+    <div class="read-badge">5 min read</div>
+  </div>
+  <div class="scroll-hint" id="scrollHint">
+    <div class="scroll-hint-text">scroll</div>
+    <div class="scroll-hint-line"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SCENE 1 — THE BOY & THE HORSE
+════════════════════════════════ -->
+<div class="scene-wrapper" style="height:2200px" id="w1">
+  <div class="sticky-panel" id="panel1">
+
+    <div class="scene-bg s1-bg scroll-blur" id="bg1"></div>
+    <div class="scene-overlay"></div>
+    <div class="scene-gradient"></div>
+
+    <div class="scene-top">
+      <div class="scene-top-line" id="line1"></div>
+      <div class="scene-num" id="num1">01 / 05</div>
+    </div>
+
+    <div class="scene-content" id="content1">
+      <div class="scene-headline" id="headline1">
+        <!-- Words injected by JS -->
+      </div>
+      <div class="scene-body" id="body1">
+        <p>The horse was called Bucephalus. Every rider had failed. It reared, threw them, refused.</p>
+        <p>Alexander watched quietly. He noticed the horse was terrified of its own shadow. He turned it toward the sun, mounted it, and rode.</p>
+        <p>His father Philip watched and wept. Find a kingdom worthy of you, son, he said. Macedonia is too small.</p>
+      </div>
+      <div class="scene-pullquote" id="pullquote1">
+        Some people are told their whole lives that they are ordinary. Alexander was told the opposite, and he believed it completely.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCENE 2 — THE CROSSING
+════════════════════════════════ -->
+<div class="scene-wrapper" style="height:2200px" id="w2">
+  <div class="sticky-panel" id="panel2">
+
+    <div class="scene-bg s2-bg scroll-blur" id="bg2"></div>
+    <div class="scene-overlay"></div>
+    <div class="scene-gradient"></div>
+
+    <div class="scene-top">
+      <div class="scene-top-line" id="line2"></div>
+      <div class="scene-num" id="num2">02 / 05</div>
+    </div>
+
+    <div class="scene-content" id="content2">
+      <div class="scene-headline" id="headline2">
+        <!-- Words injected by JS -->
+      </div>
+      <div class="scene-body" id="body2">
+        <p>His father Philip was assassinated at a wedding. Alexander took the throne in a single night, executing rivals, silencing doubters, consolidating power before dawn.</p>
+        <p>Two years later, he stood at the Hellespont, the narrow strait separating Europe from Asia.</p>
+        <p>He threw his spear into the Persian shore. That was his declaration of war. Not a letter. Not a messenger. A spear.</p>
+      </div>
+      <div class="scene-pullquote" id="pullquote2">
+        The greatest moves in history rarely look strategic in the moment. They look like arrogance.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCENE 3 — THE UNDEFEATED
+════════════════════════════════ -->
+<div class="scene-wrapper" style="height:2200px" id="w3">
+  <div class="sticky-panel" id="panel3">
+
+    <div class="scene-bg s3-bg scroll-blur" id="bg3"></div>
+    <div class="scene-overlay"></div>
+    <div class="scene-gradient"></div>
+
+    <div class="scene-top">
+      <div class="scene-top-line" id="line3"></div>
+      <div class="scene-num" id="num3">03 / 05</div>
+    </div>
+
+    <div class="scene-content" id="content3">
+      <div class="scene-headline" id="headline3">
+        <!-- Words injected by JS -->
+      </div>
+      <div class="scene-battles" id="battles3">
+        Granicus.<br>Issus.<br>Gaugamela.<br>Tyre.<br>The Hydaspes.
+      </div>
+      <div class="scene-body" id="body3">
+        <p>He defeated the Persian Empire, the largest empire the world had ever seen, in three years.</p>
+        <p>He fought at the front of every battle, not from a safe distance. He knew his soldiers by name.</p>
+        <p>When Bucephalus died in battle in India, he named a city after him.</p>
+      </div>
+      <div class="scene-pullquote" id="pullquote3">
+        He didn't inspire loyalty through power. He inspired it through presence.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// SCROLL SPEED LIMITER (desktop only)
+// On mobile, thumb naturally controls pace — no intervention needed.
+// The scrollLoop was fighting native touch scroll, so we skip it entirely on touch devices.
+// ═══════════════════════════════════════
+const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+if (!isTouch) {
+  let scrollTarget = window.scrollY;
+
+  window.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const maxH = document.documentElement.scrollHeight - window.innerHeight;
+    const delta = Math.sign(e.deltaY) * Math.min(Math.abs(e.deltaY), 72);
+    scrollTarget = Math.max(0, Math.min(maxH, scrollTarget + delta));
+  }, { passive: false });
+
+  (function scrollLoop() {
+    const current = window.scrollY;
+    const diff = scrollTarget - current;
+    if (Math.abs(diff) > 0.5) {
+      window.scrollTo(0, current + diff * 0.1);
+    } else {
+      scrollTarget = current;
+    }
+    requestAnimationFrame(scrollLoop);
+  })();
+}
+
+// ═══════════════════════════════════════
+// WORD-BY-WORD HEADLINES
+// ═══════════════════════════════════════
+const headlines = {
+  headline1: "He was 13 years old when he tamed a horse no one else could touch.",
+  headline2: "At 20, he inherited a kingdom. At 22, he decided to conquer the world.",
+  headline3: "He fought for 11 years. He never lost a single battle."
+};
+
+// Inject headline word spans
+Object.entries(headlines).forEach(([id, text]) => {
+  const el = document.getElementById(id);
+  el.innerHTML = text.split(' ').map((word, i) =>
+    `<span class="word" data-index="${i}">${word} </span>`
+  ).join('');
+});
+
+// Inject body word spans (handles multiple <p> paragraphs)
+[1, 2, 3].forEach(i => {
+  const body = document.getElementById(`body${i}`);
+  let globalIdx = 0;
+  body.querySelectorAll('p').forEach(p => {
+    const text = p.textContent.trim();
+    p.innerHTML = text.split(' ').map(word =>
+      `<span class="body-word" data-index="${globalIdx++}">${word} </span>`
+    ).join('');
+  });
+});
+
+// ═══════════════════════════════════════
+// SCROLL ENGINE
+// ═══════════════════════════════════════
+const bar = document.getElementById('progress');
+const hint = document.getElementById('scrollHint');
+
+// Show scroll hint
+setTimeout(() => hint.classList.add('visible'), 1500);
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 60) hint.style.opacity = '0';
+}, { passive: true });
+
+// Track which scenes are "active" to avoid re-triggering blur remove
+const sceneState = { 1: false, 2: false, 3: false };
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+function onScroll() {
+  const scrollTop = window.scrollY;
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const vh = window.innerHeight;
+
+  // Progress bar
+  bar.style.width = (scrollTop / docH * 100) + '%';
+
+  // ── SCENE LOOP ──
+  [1, 2, 3].forEach(i => {
+    const wrapper = document.getElementById(`w${i}`);
+    const bg = document.getElementById(`bg${i}`);
+    const num = document.getElementById(`num${i}`);
+    const line = document.getElementById(`line${i}`);
+    const body = document.getElementById(`body${i}`);
+    const pullquote = document.getElementById(`pullquote${i}`);
+    const headline = document.getElementById(`headline${i}`);
+    const content = document.getElementById(`content${i}`);
+    const words = headline.querySelectorAll('.word');
+
+    const rect = wrapper.getBoundingClientRect();
+    const wrapH = wrapper.offsetHeight;
+
+    // Is scene visible?
+    if (rect.top < vh && rect.bottom > 0) {
+
+      // How far through the wrapper are we? 0 = just entered, 1 = about to leave
+      const rawProgress = clamp(-rect.top / (wrapH - vh), 0, 1);
+
+      // ── BLUR LIFT: image appears after headline is done (rawProgress 0.50 → 0.75) ──
+      const imageProgress = clamp((rawProgress - 0.50) / 0.25, 0, 1);
+      bg.style.filter = `brightness(${imageProgress})`;
+      // Scene number animates in on first enter
+      if (!sceneState[i]) {
+        sceneState[i] = true;
+        num.classList.add('in');
+        line.classList.add('in');
+      }
+
+      // ── PARALLAX: slow zoom, all scenes ──
+      const scale = 1.0 + rawProgress * 0.18;
+      bg.style.transform = `scale(${scale})`;
+      bg.style.opacity = 1 - rawProgress * 0.12;
+
+      // ── WORD BY WORD: headline builds through first 50% ──
+      const wordProgress = clamp(rawProgress / 0.5, 0, 1);
+      const wordsToLight = Math.floor(wordProgress * words.length);
+      words.forEach((w, idx) => {
+        if (idx < wordsToLight) w.classList.add('lit');
+        else w.classList.remove('lit');
+      });
+
+      // ── BATTLE NAMES: appear with image reveal (scene 3 only) ──
+      const battles = document.getElementById(`battles${i}`);
+      if (battles) {
+        if (rawProgress > 0.50) battles.classList.add('in');
+        else battles.classList.remove('in');
+      }
+
+      // ── BODY TEXT: starts after headline is fully done (55% → 88%) ──
+      const bodyWords = body.querySelectorAll('.body-word');
+      const bodyProgress = clamp((rawProgress - 0.55) / 0.33, 0, 1);
+      const bodyWordsToLight = Math.floor(bodyProgress * bodyWords.length);
+      bodyWords.forEach((w, idx) => {
+        if (idx < bodyWordsToLight) w.classList.add('lit');
+        else w.classList.remove('lit');
+      });
+
+      // ── TELEPROMPTER: content rises as body is written (55% → 90%) ──
+      const teleY = clamp((rawProgress - 0.55) / 0.35, 0, 1) * 300;
+      content.style.transform = `translateY(-${teleY}px)`;
+
+      // ── PULLQUOTE: fades in after body is done (91%), out on scroll back ──
+      if (rawProgress > 0.91) pullquote.classList.add('in');
+      else pullquote.classList.remove('in');
+
+
+
+    } else if (rect.top >= vh) {
+      // Scene hasn't been entered yet — reset for reuse
+      sceneState[i] = false;
+      bg.style.filter = 'brightness(0)';
+      bg.style.transform = 'scale(1.08)';
+      bg.style.opacity = 1;
+      content.style.transform = 'translateY(0)';
+    }
+  });
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+// Run once on load
+onScroll();
+</script>
+</body>
+</html>
