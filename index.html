@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Alexander — The Great</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Crimson+Pro:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #080810;
@@ -211,6 +211,10 @@
     top: 0;
     height: 100lvh;
     overflow: hidden;
+    background:
+      radial-gradient(ellipse 80% 55% at 50% 25%, #1c1508 0%, transparent 65%),
+      radial-gradient(ellipse 50% 70% at 75% 70%, #0d0a1a 0%, transparent 60%),
+      var(--bg);
   }
 
   /* Top fade — content scrolls up and dissolves before reaching 01/05 */
@@ -228,27 +232,20 @@
     pointer-events: none;
   }
 
-  /* ── Scene BG: starts blurred, sharpens on enter ── */
+  /* ── Scene BG: starts invisible, fades in via JS opacity ── */
   .scene-bg {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
     background-size: cover;
     background-position: center;
-    will-change: transform, filter, opacity;
+    object-fit: cover;
+    object-position: center;
+    will-change: transform, opacity;
     transform-origin: center center;
-    filter: blur(12px) brightness(0.6);
+    opacity: 0;
     transform: scale(1.08);
-    transition: filter 0.9s ease;
-  }
-
-  .scene-bg.sharp {
-    filter: blur(0px) brightness(1);
-    transform: scale(1);
-  }
-
-  /* Scene 1: blur driven by JS scroll progress — no CSS transition */
-  .scene-bg.scroll-blur {
-    transition: none;
   }
 
   .scene-overlay {
@@ -334,8 +331,9 @@
 
   /* Body text */
   .scene-body {
-    font-size: 18px;
-    font-weight: 500;
+    font-family: 'Crimson Pro', serif;
+    font-size: 20px;
+    font-weight: 400;
     line-height: 1.7;
     color: rgba(240,237,230,0.72);
     margin-bottom: 20px;
@@ -375,6 +373,35 @@
 
 
   /* ══════════════════════════
+     QUOTE SCREEN
+  ══════════════════════════ */
+  .quote-wrapper {
+    position: relative;
+  }
+
+  .quote-screen {
+    position: sticky;
+    top: 0;
+    height: 100lvh;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+  }
+
+  .quote-screen-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--accent);
+    text-align: center;
+  }
+
+  /* ══════════════════════════
      SCENE 1 BACKGROUND
   ══════════════════════════ */
   .s1-bg {
@@ -390,6 +417,35 @@
     background-image: url('assets/images/lucid-origin_Alexander_the_Great_leading_a_cavalry_charge_at_the_Battle_of_Gaugamela_ancient_-0.jpg');
     background-size: cover;
     background-position: center 35%;
+  }
+
+  /* ══════════════════════════
+     SCENE 5 BACKGROUND
+  ══════════════════════════ */
+  .s5-bg {
+    background-image: url('assets/images/lucid-origin_Ancient_Babylon_palace_interior_at_night_a_young_king_lying_on_a_golden_bed_surr-0.jpg');
+    background-size: cover;
+    background-position: center 20%;
+  }
+
+  /* ══════════════════════════
+     SCENE 5 BACKGROUND (video — no CSS bg needed)
+  ══════════════════════════ */
+
+  /* Scene 5 aside — isolated line between headline and body */
+  .scene-aside {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--text-dim);
+    margin: 20px 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .scene-aside.in {
+    opacity: 1;
   }
 
   /* Battle names — appear as a block after headline */
@@ -408,6 +464,15 @@
   .scene-battles.in {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  /* ══════════════════════════
+     SCENE 4 BACKGROUND
+  ══════════════════════════ */
+  .s4-bg {
+    background-image: url('assets/images/lucid-origin_An_ancient_king_standing_alone_at_the_edge_of_a_great_river_in_India_looking_eas-0.jpg');
+    background-size: cover;
+    background-position: center 25%;
   }
 
   /* ══════════════════════════
@@ -435,6 +500,181 @@
   @keyframes bounce {
     0%, 100% { transform: translateX(-50%) translateY(0); }
     50% { transform: translateX(-50%) translateY(7px); }
+  }
+
+  @keyframes emblemPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  /* ══════════════════════════
+     COMPLETION SCREEN
+  ══════════════════════════ */
+  .completion-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    -webkit-object-fit: cover;
+    object-position: center;
+  }
+
+  .completion-content {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 52px 28px 44px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+
+  .completion-content.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .completion-emblem {
+    font-size: 20px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    animation: emblemPulse 3s ease-in-out infinite;
+  }
+
+  .completion-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 5px;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .completion-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 18px;
+  }
+
+  .completion-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.4;
+    margin-bottom: 22px;
+  }
+
+  .completion-card {
+    width: 100%;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .completion-card-title {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .completion-card-body {
+    font-family: 'Crimson Pro', serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: rgba(240,237,230,0.72);
+  }
+
+  .completion-cta {
+    display: block;
+    width: 100%;
+    background: var(--accent);
+    color: #080810;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .completion-cta.visible { opacity: 1; }
+
+  /* ── LETEH OVERLAY ── */
+  #letehOverlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  #letehOverlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  #letehText {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 600;
+    letter-spacing: 8px;
+    color: var(--text);
+    display: flex;
+    align-items: baseline;
+  }
+
+  .leteh-letter {
+    opacity: 0;
+    filter: blur(6px);
+    transition: opacity 0.35s ease, filter 0.35s ease;
+    display: inline-block;
+  }
+
+  .leteh-letter.lit {
+    opacity: 1;
+    filter: blur(0px);
+  }
+
+  .leteh-space {
+    display: inline-block;
+    width: 22px;
+  }
+
+  #letehBack {
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 13px 28px;
+    color: var(--text-dim);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    white-space: nowrap;
   }
 </style>
 </head>
@@ -465,10 +705,10 @@
 <!-- ════════════════════════════════
      SCENE 1 — THE BOY & THE HORSE
 ════════════════════════════════ -->
-<div class="scene-wrapper" style="height:2200px" id="w1">
+<div class="scene-wrapper" style="height:3300px" id="w1">
   <div class="sticky-panel" id="panel1">
 
-    <div class="scene-bg s1-bg scroll-blur" id="bg1"></div>
+    <div class="scene-bg s1-bg" id="bg1"></div>
     <div class="scene-overlay"></div>
     <div class="scene-gradient"></div>
 
@@ -486,21 +726,27 @@
         <p>Alexander watched quietly. He noticed the horse was terrified of its own shadow. He turned it toward the sun, mounted it, and rode.</p>
         <p>His father Philip watched and wept. Find a kingdom worthy of you, son, he said. Macedonia is too small.</p>
       </div>
-      <div class="scene-pullquote" id="pullquote1">
-        Some people are told their whole lives that they are ordinary. Alexander was told the opposite, and he believed it completely.
-      </div>
     </div>
 
   </div>
 </div>
 
 <!-- ════════════════════════════════
+     QUOTE SCREEN 1
+════════════════════════════════ -->
+<div class="quote-wrapper" style="height:1400px" id="wQ1">
+  <div class="quote-screen" id="panelQ1">
+    <div class="quote-screen-text" id="quoteScreen1"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
      SCENE 2 — THE CROSSING
 ════════════════════════════════ -->
-<div class="scene-wrapper" style="height:2200px" id="w2">
+<div class="scene-wrapper" style="height:3300px" id="w2">
   <div class="sticky-panel" id="panel2">
 
-    <div class="scene-bg s2-bg scroll-blur" id="bg2"></div>
+    <div class="scene-bg s2-bg" id="bg2"></div>
     <div class="scene-overlay"></div>
     <div class="scene-gradient"></div>
 
@@ -518,21 +764,27 @@
         <p>Two years later, he stood at the Hellespont, the narrow strait separating Europe from Asia.</p>
         <p>He threw his spear into the Persian shore. That was his declaration of war. Not a letter. Not a messenger. A spear.</p>
       </div>
-      <div class="scene-pullquote" id="pullquote2">
-        The greatest moves in history rarely look strategic in the moment. They look like arrogance.
-      </div>
     </div>
 
   </div>
 </div>
 
 <!-- ════════════════════════════════
+     QUOTE SCREEN 2
+════════════════════════════════ -->
+<div class="quote-wrapper" style="height:1400px" id="wQ2">
+  <div class="quote-screen" id="panelQ2">
+    <div class="quote-screen-text" id="quoteScreen2"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
      SCENE 3 — THE UNDEFEATED
 ════════════════════════════════ -->
-<div class="scene-wrapper" style="height:2200px" id="w3">
+<div class="scene-wrapper" style="height:3300px" id="w3">
   <div class="sticky-panel" id="panel3">
 
-    <div class="scene-bg s3-bg scroll-blur" id="bg3"></div>
+    <div class="scene-bg s3-bg" id="bg3"></div>
     <div class="scene-overlay"></div>
     <div class="scene-gradient"></div>
 
@@ -553,12 +805,136 @@
         <p>He fought at the front of every battle, not from a safe distance. He knew his soldiers by name.</p>
         <p>When Bucephalus died in battle in India, he named a city after him.</p>
       </div>
-      <div class="scene-pullquote" id="pullquote3">
-        He didn't inspire loyalty through power. He inspired it through presence.
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     QUOTE SCREEN 3
+════════════════════════════════ -->
+<div class="quote-wrapper" style="height:1400px" id="wQ3">
+  <div class="quote-screen" id="panelQ3">
+    <div class="quote-screen-text" id="quoteScreen3"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCENE 4 — THE EDGE OF THE WORLD
+════════════════════════════════ -->
+<div class="scene-wrapper" style="height:3300px" id="w4">
+  <div class="sticky-panel" id="panel4">
+
+    <div class="scene-bg s4-bg" id="bg4"></div>
+    <div class="scene-overlay"></div>
+    <div class="scene-gradient"></div>
+
+    <div class="scene-top">
+      <div class="scene-top-line" id="line4"></div>
+      <div class="scene-num" id="num4">04 / 05</div>
+    </div>
+
+    <div class="scene-content" id="content4">
+      <div class="scene-headline" id="headline4">
+        <!-- Words injected by JS -->
+      </div>
+      <div class="scene-body" id="body4">
+        <p>At the Hyphasis River, his army stopped. They had been marching for eight years. They were exhausted, homesick, and done.</p>
+        <p>For the first time, Alexander's men refused to follow. He locked himself in his tent for three days, hoping they would change their minds. They didn't.</p>
+        <p>He turned back. It was the only retreat of his life.</p>
       </div>
     </div>
 
   </div>
+</div>
+
+<!-- ════════════════════════════════
+     QUOTE SCREEN 4
+════════════════════════════════ -->
+<div class="quote-wrapper" style="height:1400px" id="wQ4">
+  <div class="quote-screen" id="panelQ4">
+    <div class="quote-screen-text" id="quoteScreen4"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCENE 5 — 32 YEARS OLD
+════════════════════════════════ -->
+<div class="scene-wrapper" style="height:3300px" id="w5">
+  <div class="sticky-panel" id="panel5">
+
+    <div class="scene-bg s5-bg" id="bg5"></div>
+    <div class="scene-overlay"></div>
+    <div class="scene-gradient"></div>
+
+    <div class="scene-top">
+      <div class="scene-top-line" id="line5"></div>
+      <div class="scene-num" id="num5">05 / 05</div>
+    </div>
+
+    <div class="scene-content" id="content5">
+      <div class="scene-headline" id="headline5">
+        <!-- Words injected by JS -->
+      </div>
+      <div class="scene-aside" id="aside5">
+        Younger than most people reading this.
+      </div>
+      <div class="scene-body" id="body5">
+        <p>He had spent 11 years conquering the known world. He had founded over 70 cities.</p>
+        <p>He died of a fever — or possibly poison — in the palace of Nebuchadnezzar. When asked on his deathbed who should inherit his empire, he said: "The strongest."</p>
+        <p>His generals tore it apart within a generation.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     QUOTE SCREEN 5
+════════════════════════════════ -->
+<div class="quote-wrapper" style="height:1400px" id="wQ5">
+  <div class="quote-screen" id="panelQ5">
+    <div class="quote-screen-text" id="quoteScreen5"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     COMPLETION SCREEN
+════════════════════════════════ -->
+<div class="scene-wrapper" style="height:3000px" id="wC">
+  <div class="sticky-panel" id="panelC">
+
+    <video class="completion-video" id="completionVideo" muted playsinline preload="auto">
+      <source src="assets/images/12191404_2160_3840_25fps.mp4" type="video/mp4">
+    </video>
+    <div class="scene-overlay"></div>
+
+    <div class="completion-content" id="completionContent">
+      <div class="completion-emblem">✦</div>
+      <div class="completion-label">STORY COMPLETE</div>
+      <div class="completion-title">Alexander the Great</div>
+      <div class="completion-divider"></div>
+      <div class="completion-card">
+        <div class="completion-card-title">CARRY THIS WITH YOU</div>
+        <div class="completion-card-body" id="completionBody">The New Testament was written in Greek because of him. Every time you say "philosophy," "democracy," or "cosmos" — you're speaking a language he carried on horseback to the edge of the known world.</div>
+      </div>
+      <button class="completion-cta" id="ctaBtn">Explore more stories</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── LETEH OVERLAY ── -->
+<div id="letehOverlay">
+  <div id="letehText">
+    <span class="leteh-letter">L</span>
+    <span class="leteh-letter">E</span>
+    <span class="leteh-space"></span>
+    <span class="leteh-letter">T</span>
+    <span class="leteh-letter">E</span>
+    <span class="leteh-letter">H</span>
+  </div>
+  <button id="letehBack">← Back to story</button>
 </div>
 
 <script>
@@ -597,7 +973,9 @@ if (!isTouch) {
 const headlines = {
   headline1: "He was 13 years old when he tamed a horse no one else could touch.",
   headline2: "At 20, he inherited a kingdom. At 22, he decided to conquer the world.",
-  headline3: "He fought for 11 years. He never lost a single battle."
+  headline3: "He fought for 11 years. He never lost a single battle.",
+  headline4: "He reached India and wept — because there was nowhere left to go.",
+  headline5: "He died in Babylon in 323 BC. He was 32."
 };
 
 // Inject headline word spans
@@ -609,7 +987,7 @@ Object.entries(headlines).forEach(([id, text]) => {
 });
 
 // Inject body word spans (handles multiple <p> paragraphs)
-[1, 2, 3].forEach(i => {
+[1, 2, 3, 4, 5].forEach(i => {
   const body = document.getElementById(`body${i}`);
   let globalIdx = 0;
   body.querySelectorAll('p').forEach(p => {
@@ -633,7 +1011,7 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 // Track which scenes are "active" to avoid re-triggering blur remove
-const sceneState = { 1: false, 2: false, 3: false };
+const sceneState = { 1: false, 2: false, 3: false, 4: false, 5: false };
 
 function lerp(a, b, t) { return a + (b - a) * t; }
 function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
@@ -647,7 +1025,7 @@ function onScroll() {
   bar.style.width = (scrollTop / docH * 100) + '%';
 
   // ── SCENE LOOP ──
-  [1, 2, 3].forEach(i => {
+  [1, 2, 3, 4, 5].forEach(i => {
     const wrapper = document.getElementById(`w${i}`);
     const bg = document.getElementById(`bg${i}`);
     const num = document.getElementById(`num${i}`);
@@ -667,9 +1045,10 @@ function onScroll() {
       // How far through the wrapper are we? 0 = just entered, 1 = about to leave
       const rawProgress = clamp(-rect.top / (wrapH - vh), 0, 1);
 
-      // ── BLUR LIFT: image appears after headline is done (rawProgress 0.50 → 0.75) ──
-      const imageProgress = clamp((rawProgress - 0.50) / 0.25, 0, 1);
-      bg.style.filter = `brightness(${imageProgress})`;
+      // ── IMAGE REVEAL: starts during headline (0.15 → 0.78), slow fade ──
+      const revealProgress = clamp((rawProgress - 0.15) / 0.63, 0, 1);
+      bg.style.opacity = revealProgress * (1 - rawProgress * 0.12);
+
       // Scene number animates in on first enter
       if (!sceneState[i]) {
         sceneState[i] = true;
@@ -677,10 +1056,9 @@ function onScroll() {
         line.classList.add('in');
       }
 
-      // ── PARALLAX: slow zoom, all scenes ──
+      // ── PARALLAX: slow zoom ──
       const scale = 1.0 + rawProgress * 0.18;
       bg.style.transform = `scale(${scale})`;
-      bg.style.opacity = 1 - rawProgress * 0.12;
 
       // ── WORD BY WORD: headline builds through first 50% ──
       const wordProgress = clamp(rawProgress / 0.5, 0, 1);
@@ -697,6 +1075,13 @@ function onScroll() {
         else battles.classList.remove('in');
       }
 
+      // ── ASIDE: isolated line, appears with image reveal (scene 5 only) ──
+      const aside = document.getElementById(`aside${i}`);
+      if (aside) {
+        if (rawProgress > 0.50) aside.classList.add('in');
+        else aside.classList.remove('in');
+      }
+
       // ── BODY TEXT: starts after headline is fully done (55% → 88%) ──
       const bodyWords = body.querySelectorAll('.body-word');
       const bodyProgress = clamp((rawProgress - 0.55) / 0.33, 0, 1);
@@ -711,17 +1096,18 @@ function onScroll() {
       content.style.transform = `translateY(-${teleY}px)`;
 
       // ── PULLQUOTE: fades in after body is done (91%), out on scroll back ──
-      if (rawProgress > 0.91) pullquote.classList.add('in');
-      else pullquote.classList.remove('in');
+      if (pullquote) {
+        if (rawProgress > 0.91) pullquote.classList.add('in');
+        else pullquote.classList.remove('in');
+      }
 
-
+      // ── EXIT FADE: disabled — content stays fully visible through end of scene ──
 
     } else if (rect.top >= vh) {
       // Scene hasn't been entered yet — reset for reuse
       sceneState[i] = false;
-      bg.style.filter = 'brightness(0)';
+      bg.style.opacity = 0;
       bg.style.transform = 'scale(1.08)';
-      bg.style.opacity = 1;
       content.style.transform = 'translateY(0)';
     }
   });
@@ -730,6 +1116,176 @@ function onScroll() {
 window.addEventListener('scroll', onScroll, { passive: true });
 // Run once on load
 onScroll();
+
+// ═══════════════════════════════════════
+// COMPLETION SCREEN — VIDEO SCRUB + TEXT REVEAL
+// ═══════════════════════════════════════
+const completionWrapper = document.getElementById('wC');
+const completionVideo = document.getElementById('completionVideo');
+const completionContent = document.getElementById('completionContent');
+const completionCta = document.getElementById('ctaBtn');
+let completionEntered = false;
+let videoUnlocked = false;
+let pendingProgress = 0;
+
+// Inject body-word spans
+const completionBodyEl = document.getElementById('completionBody');
+completionBodyEl.innerHTML = completionBodyEl.textContent.trim()
+  .split(' ').map(w => `<span class="body-word">${w} </span>`).join('');
+const completionBodyWords = completionBodyEl.querySelectorAll('.body-word');
+
+function scrubVideo(progress) {
+  if (!completionVideo.duration || isNaN(completionVideo.duration)) return;
+  completionVideo.currentTime = progress * completionVideo.duration;
+}
+
+// Desktop path: preload="auto" fires loadeddata — render first frame to unlock display
+completionVideo.addEventListener('loadeddata', () => {
+  completionVideo.currentTime = 0;
+  videoUnlocked = true;
+  scrubVideo(pendingProgress);
+});
+
+function updateCompletion() {
+  const rect = completionWrapper.getBoundingClientRect();
+  const wrapH = completionWrapper.offsetHeight;
+  const vh = window.innerHeight;
+
+  if (rect.top < vh && rect.bottom > 0) {
+    const rawProgress = clamp(-rect.top / (wrapH - vh), 0, 1);
+    pendingProgress = rawProgress;
+
+    if (!completionEntered) {
+      completionEntered = true;
+      completionContent.classList.add('visible');
+
+      if (!videoUnlocked) {
+        completionVideo.play().then(() => {
+          completionVideo.pause();
+          videoUnlocked = true;
+          scrubVideo(pendingProgress);
+        }).catch(() => {
+          videoUnlocked = true;
+          scrubVideo(pendingProgress);
+        });
+      }
+    }
+
+    scrubVideo(rawProgress);
+
+    // ── BODY WORDS: 0.15 → 0.65 ──
+    const bodyProgress = clamp((rawProgress - 0.15) / 0.50, 0, 1);
+    const wordsToLight = Math.floor(bodyProgress * completionBodyWords.length);
+    completionBodyWords.forEach((w, i) => {
+      if (i < wordsToLight) w.classList.add('lit');
+      else w.classList.remove('lit');
+    });
+
+    // ── CTA: appears after body is done ──
+    if (rawProgress > 0.70) completionCta.classList.add('visible');
+    else completionCta.classList.remove('visible');
+
+  } else if (rect.top >= vh) {
+    completionEntered = false;
+    completionContent.classList.remove('visible');
+    completionBodyWords.forEach(w => w.classList.remove('lit'));
+    completionCta.classList.remove('visible');
+    scrubVideo(0);
+  }
+}
+
+window.addEventListener('scroll', updateCompletion, { passive: true });
+updateCompletion();
+
+// ═══════════════════════════════════════
+// QUOTE SCREEN 1 — word-by-word on dark
+// ═══════════════════════════════════════
+const quoteWrapper1 = document.getElementById('wQ1');
+const quoteEl1 = document.getElementById('quoteScreen1');
+
+quoteEl1.innerHTML = "Some people are told their whole lives that they are ordinary. Alexander was told the opposite — and he believed it completely."
+  .split(' ').map(w => `<span class="word">${w} </span>`).join('');
+
+const quoteWords1 = quoteEl1.querySelectorAll('.word');
+
+function updateQuote1() {
+  const rect = quoteWrapper1.getBoundingClientRect();
+  const wrapH = quoteWrapper1.offsetHeight;
+  const vh = window.innerHeight;
+
+  if (rect.top < vh && rect.bottom > 0) {
+    const rawProgress = clamp(-rect.top / (wrapH - vh), 0, 1);
+    const wordProgress = clamp((rawProgress - 0.10) / 0.65, 0, 1);
+    const wordsToLight = Math.floor(wordProgress * quoteWords1.length);
+    quoteWords1.forEach((w, i) => {
+      if (i < wordsToLight) w.classList.add('lit');
+      else w.classList.remove('lit');
+    });
+  } else if (rect.top >= vh) {
+    quoteWords1.forEach(w => w.classList.remove('lit'));
+  }
+}
+
+window.addEventListener('scroll', updateQuote1, { passive: true });
+updateQuote1();
+
+// ── Quote screens 2–5 ──
+const quoteScreens = [
+  { id: 'wQ2', textId: 'quoteScreen2', text: "The greatest moves in history rarely look strategic in the moment. They look like arrogance." },
+  { id: 'wQ3', textId: 'quoteScreen3', text: "He didn't inspire loyalty through power. He inspired it through presence." },
+  { id: 'wQ4', textId: 'quoteScreen4', text: "What do you do when you've achieved everything you ever wanted, and it's still not enough?" },
+  { id: 'wQ5', textId: 'quoteScreen5', text: "He spent his life building something no one could hold after him. But 2,300 years later, you just read his story. Some things outlast empires." },
+];
+
+quoteScreens.forEach(({ id, textId, text }) => {
+  const wrapper = document.getElementById(id);
+  const el = document.getElementById(textId);
+
+  el.innerHTML = text.split(' ').map(w => `<span class="word">${w} </span>`).join('');
+  const words = el.querySelectorAll('.word');
+
+  function update() {
+    const rect = wrapper.getBoundingClientRect();
+    const wrapH = wrapper.offsetHeight;
+    const vh = window.innerHeight;
+
+    if (rect.top < vh && rect.bottom > 0) {
+      const rawProgress = clamp(-rect.top / (wrapH - vh), 0, 1);
+      const wordProgress = clamp((rawProgress - 0.10) / 0.65, 0, 1);
+      const wordsToLight = Math.floor(wordProgress * words.length);
+      words.forEach((w, i) => {
+        if (i < wordsToLight) w.classList.add('lit');
+        else w.classList.remove('lit');
+      });
+    } else if (rect.top >= vh) {
+      words.forEach(w => w.classList.remove('lit'));
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+});
+
+// ── LETEH BACK ──
+document.getElementById('letehBack').addEventListener('click', () => {
+  document.getElementById('letehOverlay').classList.remove('visible');
+});
+
+// ── EXPLORE CTA ──
+document.getElementById('ctaBtn').addEventListener('click', () => {
+  const overlay = document.getElementById('letehOverlay');
+  const letters = overlay.querySelectorAll('.leteh-letter');
+
+  // Reset all letters
+  letters.forEach(l => l.classList.remove('lit'));
+
+  overlay.classList.add('visible');
+
+  // Reveal letters one by one
+  letters.forEach((letter, i) => {
+    setTimeout(() => letter.classList.add('lit'), 300 + i * 220);
+  });
+});
 </script>
 </body>
 </html>
